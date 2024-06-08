@@ -1,5 +1,7 @@
 package com.example.callbreathinglight.ui.component
 
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
@@ -33,6 +35,7 @@ import com.example.callbreathinglight.MainViewModel
 import com.example.callbreathinglight.ui.data.LightData
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.callbreathinglight.R
+import kotlinx.coroutines.launch
 
 
 /**
@@ -73,7 +76,9 @@ fun LightListComponent(lightLists: List<LightData>, modifier: Modifier = Modifie
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun LightItem(lightItem: LightData) {
+    val coroutineScope = rememberCoroutineScope()
     val swipeableState = rememberSwipeableState(initialValue = 0)
+    val animatableOffset = remember { Animatable(0f) }  // 用于平滑动画的Animatable
     val size = 88.dp  // 设置按钮宽度
 
     ConstraintLayout(
@@ -87,7 +92,7 @@ fun LightItem(lightItem: LightData) {
                 state = swipeableState,
                 anchors = mapOf(
                     0f to 0, // 初始位置
-                    -size.value * 2 to -1 // 左滑两个按钮的宽度
+                    size.value * 2 to 1 // 左滑两个按钮的宽度
                 ),
                 thresholds = { _, _ -> FractionalThreshold(0.3f) }, // 到达30%触发滑动
                 orientation = Orientation.Horizontal
@@ -137,18 +142,29 @@ fun LightItem(lightItem: LightData) {
             )
         }
 
+        // 根据滑动状态更新动画值
+        LaunchedEffect(swipeableState.currentValue) {
+            animatableOffset.animateTo(
+                targetValue = swipeableState.offset.value,
+                animationSpec = tween(durationMillis = 500)  // 定义动画时长
+            )
+        }
+
 
         // 滑动显示的按钮
         Row(
             modifier = Modifier
                 .constrainAs(editAndDelete) {
                     top.linkTo(lightItemView.top)
+                    end.linkTo(parent.end)
                 }
-                .fillMaxSize()
+                .fillMaxHeight()
+                .width(animatableOffset.value.dp)
+//                .width(with(swipeableState) { offset.value.coerceIn(0f, size.value) }.dp)
+//                .width(size * 2)
                 .background(Color.Transparent)
 
         ) {
-            Spacer(modifier = Modifier.weight(1f))
             // 编辑按钮
             Column(
                 modifier = Modifier
