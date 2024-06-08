@@ -72,14 +72,12 @@ fun LightListComponent(lightLists: List<LightData>, modifier: Modifier = Modifie
 }
 
 
-
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun LightItem(lightItem: LightData) {
-    val coroutineScope = rememberCoroutineScope()
-    val swipeableState = rememberSwipeableState(initialValue = 0)
-    val animatableOffset = remember { Animatable(0f) }  // 用于平滑动画的Animatable
     val size = 88.dp  // 设置按钮宽度
+    val swipeableState = rememberSwipeableState(initialValue = 0)
+    val animatableOffset = remember { Animatable(size.value * 2) }  // 默认状态为图片完全隐藏
 
     ConstraintLayout(
         modifier = Modifier
@@ -91,8 +89,8 @@ fun LightItem(lightItem: LightData) {
             .swipeable(
                 state = swipeableState,
                 anchors = mapOf(
-                    0f to 0, // 初始位置
-                    size.value * 2 to 1 // 左滑两个按钮的宽度
+                    size.value * 2 to 0,  // 初始位置，按钮完全隐藏
+                    0f to 1  // 左滑两个按钮的宽度
                 ),
                 thresholds = { _, _ -> FractionalThreshold(0.3f) }, // 到达30%触发滑动
                 orientation = Orientation.Horizontal
@@ -145,7 +143,7 @@ fun LightItem(lightItem: LightData) {
         // 根据滑动状态更新动画值
         LaunchedEffect(swipeableState.currentValue) {
             animatableOffset.animateTo(
-                targetValue = swipeableState.offset.value,
+                targetValue = swipeableState.offset.value,  // 反向滑动
                 animationSpec = tween(durationMillis = 500)  // 定义动画时长
             )
         }
@@ -159,7 +157,7 @@ fun LightItem(lightItem: LightData) {
                     end.linkTo(parent.end)
                 }
                 .fillMaxHeight()
-                .width(animatableOffset.value.dp)
+                .width((size.value * 2 - animatableOffset.value).coerceAtLeast(0f).dp)  // 保证宽度非负
 //                .width(with(swipeableState) { offset.value.coerceIn(0f, size.value) }.dp)
 //                .width(size * 2)
                 .background(Color.Transparent)
