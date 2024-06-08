@@ -1,6 +1,8 @@
 package com.example.callbreathinglight.ui.component
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,14 +21,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.callbreathinglight.MainViewModel
 import com.example.callbreathinglight.ui.data.LightData
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.callbreathinglight.R
 
 
 /**
@@ -36,7 +42,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
  */
 @Composable
 fun LightListComponent(lightLists: List<LightData>, modifier: Modifier = Modifier) {
-    val viewModel:MainViewModel = viewModel()
+    val viewModel: MainViewModel = viewModel()
 
     LazyColumn(modifier = modifier) {
         itemsIndexed(lightLists) { index, lightItem ->
@@ -56,94 +62,54 @@ fun LightListComponent(lightLists: List<LightData>, modifier: Modifier = Modifie
                         )
                     )
                 }
-                LightItemA(lightItem = lightItem)
+                LightItem(lightItem = lightItem)
             }
         }
     }
 }
 
-@Composable
-fun LightItem(lightItem: LightData) {
-    Column(
-        Modifier
-            .padding(0.dp, 10.dp, 20.dp, 10.dp)
-            .fillMaxSize()
-            .shadow(8.dp, shape = RoundedCornerShape(10.dp), clip = true, Color(0x1ACFCCCC))
-            .clip(RoundedCornerShape(1.dp))
-            .background(Color.White)
-            .padding(10.dp),
-
-        ) {
-        Row(
-            Modifier
-                .align(Alignment.CenterHorizontally)
-                .fillMaxWidth()
-        ) {
-
-            Text(
-                lightItem.name,
-                fontSize = 15.sp,
-                color = Color.Black,
-                modifier = Modifier.weight(1f),
-                fontWeight = FontWeight.Bold,
-            )
-            Text(
-                lightItem.time,
-                fontSize = 11.sp,
-                color = Color.Gray,
-                modifier = Modifier.padding(8.dp, 8.dp, 12.dp, 8.dp)
-            )
-        }
-
-        Text(
-            "备注：" + lightItem.message,
-            fontSize = 12.sp,
-            color = Color.Gray,
-            maxLines = 2,
-            overflow = TextOverflow.Ellipsis,
-            lineHeight = 16.sp
-
-        )
-    }
-}
 
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun LightItemA(lightItem: LightData) {
+fun LightItem(lightItem: LightData) {
     val swipeableState = rememberSwipeableState(initialValue = 0)
     val size = 88.dp  // 设置按钮宽度
 
-    Box(
+    ConstraintLayout(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(20.dp, 10.dp, 20.dp, 10.dp)
+            .height(IntrinsicSize.Min)
+            .padding(15.dp, 5.dp, 15.dp, 5.dp)
             .shadow(8.dp, shape = RoundedCornerShape(10.dp), clip = true, Color(0x1ACFCCCC))
             .clip(RoundedCornerShape(1.dp))
             .background(Color.White)
-//            .swipeable(
-//                state = swipeableState,
-//                anchors = mapOf(
-//                    0f to 0, // 初始位置
-//                    -size.value * 2 to -1 // 左滑两个按钮的宽度
-//                ),
-//                thresholds = { _, _ -> FractionalThreshold(0.3f) }, // 到达30%触发滑动
-//                orientation = Orientation.Horizontal
-//            )
+            .swipeable(
+                state = swipeableState,
+                anchors = mapOf(
+                    0f to 0, // 初始位置
+                    -size.value * 2 to -1 // 左滑两个按钮的宽度
+                ),
+                thresholds = { _, _ -> FractionalThreshold(0.3f) }, // 到达30%触发滑动
+                orientation = Orientation.Horizontal
+            )
 
     ) {
+
+        val (lightItemView, editAndDelete) = createRefs()
 
         // Item的内容
         Column(
             Modifier
-                .fillMaxSize()
-                .align(Alignment.CenterStart)
+                .constrainAs(lightItemView) {
+                    top.linkTo(parent.top)
+                }
+                .wrapContentSize()
                 .background(Color.White)
                 .padding(10.dp)
         ) {
             Row(
                 Modifier
-                    .fillMaxWidth()
+                    .wrapContentSize()
                     .align(Alignment.CenterHorizontally)
             ) {
                 Text(
@@ -175,29 +141,63 @@ fun LightItemA(lightItem: LightData) {
         // 滑动显示的按钮
         Row(
             modifier = Modifier
+                .constrainAs(editAndDelete) {
+                    top.linkTo(lightItemView.top)
+                }
                 .fillMaxSize()
-                .align(Alignment.CenterStart)
-                .background(Color.Yellow)
+                .background(Color.Transparent)
 
         ) {
             Spacer(modifier = Modifier.weight(1f))
             // 编辑按钮
-            Box(
+            Column(
                 modifier = Modifier
                     .width(size)
                     .fillMaxHeight()
-                    .background(Color.Green)
+                    .background(Color(0xFFE497BB))
             ) {
-                Text("编辑", color = Color.Black, modifier = Modifier.align(Alignment.Center))
+                Image(
+                    painterResource(id = R.drawable.edit),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(20.dp)
+                        .align(Alignment.CenterHorizontally)
+                        .weight(1f),
+                    colorFilter = ColorFilter.tint(Color.White)
+                )
+                Text(
+                    "编辑",
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .weight(1f)
+                )
             }
             // 删除按钮
-            Box(
+            Column(
                 modifier = Modifier
                     .width(size)
                     .fillMaxHeight()
-                    .background(Color.Red)
+                    .background(Color(0xFFE668A3))
             ) {
-                Text("删除", color = Color.Black, modifier = Modifier.align(Alignment.Center))
+                Image(
+                    painterResource(id = R.drawable.delete),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(20.dp)
+                        .align(Alignment.CenterHorizontally)
+                        .weight(1f),
+                    colorFilter = ColorFilter.tint(Color.White)
+                )
+                Text(
+                    "删除",
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .weight(1f)
+                )
             }
         }
     }
@@ -213,6 +213,18 @@ fun LightItemPreview() {
                 "2024-06-07 12:00",
                 "这是一个呼吸灯ssssssssssssggg呱呱呱呱呱呱呱呱呱呱呱呱呱呱呱古古怪怪"
             )
+        )
+    )
+}
+
+@Composable
+@Preview
+fun LightItemAPreview() {
+    LightItem(
+        LightData(
+            "呼吸灯1",
+            "2024-06-07 12:00",
+            "这是一个呼吸灯ssssssssssssggg"
         )
     )
 }
