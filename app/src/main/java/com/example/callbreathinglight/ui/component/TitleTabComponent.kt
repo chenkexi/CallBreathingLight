@@ -28,8 +28,7 @@ import com.example.callbreathinglight.R
  */
 
 @Composable
-fun TitleTabComponent(text: String) {
-    val viewMode: MainViewModel = viewModel()
+fun TitleTabComponent(text: String,allCheckboxClickable : () -> Unit,settingClickable : () -> Unit) {
     Row (modifier = Modifier.padding(20.dp)){
         Text(
             text = text,
@@ -45,22 +44,17 @@ fun TitleTabComponent(text: String) {
             painterResource(id = R.drawable.all_select),
             contentDescription = null,
             modifier = Modifier.size(20.dp).clickable {
-                viewMode.showCheckbox = !viewMode.showCheckbox
+                allCheckboxClickable()
             }
         )
         Spacer(modifier =Modifier.size(20.dp))
         Image(
             painterResource(id = R.drawable.setting),
             contentDescription = null,
-            modifier = Modifier.size(20.dp)
+            modifier = Modifier.size(20.dp).clickable {
+                settingClickable()
+            }
         )
     }
 }
 
-@Composable
-@Preview
-fun TitleTabComponentPreview() {
-    Surface {
-        TitleTabComponent("呼吸灯列表")
-    }
-}

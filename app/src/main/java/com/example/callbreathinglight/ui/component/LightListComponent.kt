@@ -8,7 +8,6 @@ import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -35,7 +34,6 @@ import com.example.callbreathinglight.MainViewModel
 import com.example.callbreathinglight.ui.data.LightData
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.callbreathinglight.R
-import kotlinx.coroutines.launch
 
 
 /**

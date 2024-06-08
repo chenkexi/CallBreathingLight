@@ -33,19 +33,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = Color.White
                 ) {
-                    Column {
-                        TitleTabComponent("呼吸灯列表")
-
-                        Scaffold( floatingActionButton = {
-                            FloatingActionButton(modifier = Modifier.padding(30.dp), onClick = { /* 处理点击事件 */ }) {
-                                Icon(Icons.Filled.Add, contentDescription = "Add")
-                            }
-                        }) {
-                            LightListComponent(lightLists = viewModel.lightDataList,modifier = Modifier.padding(it))
-
-
-                        }
-                    }
+                  AppNavigation()
                 }
             }
         }
