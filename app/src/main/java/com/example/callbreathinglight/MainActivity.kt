@@ -23,8 +23,6 @@ import com.example.callbreathinglight.ui.theme.CallBreathingLightTheme
 import com.example.callbreathinglight.ui.component.TitleTabComponent
 
 class MainActivity : ComponentActivity() {
-    private val viewModel:MainViewModel by  viewModels()
-    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
