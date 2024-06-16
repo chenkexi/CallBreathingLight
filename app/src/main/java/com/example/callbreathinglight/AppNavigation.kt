@@ -19,7 +19,7 @@ fun AppNavigation() {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = RouterManage.MainScreen) {
         composable(RouterManage.MainScreen) { MainScreen(navController) }
-        composable(RouterManage.SettingsScreen) { SettingsScreen() }
-        composable(RouterManage.AddScreen) { AddScreen() }
+        composable(RouterManage.SettingsScreen) { SettingsScreen(onBackClick = { navController.navigateUp() }) }
+        composable(RouterManage.AddScreen) { AddScreen(onBackClick={navController.navigateUp() }) }
     }
 }
