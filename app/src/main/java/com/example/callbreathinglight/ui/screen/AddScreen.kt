@@ -18,6 +18,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -26,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
@@ -40,12 +44,12 @@ import com.example.callbreathinglight.ui.data.CardType
 /**
  *@author :ckx
  *@since: 2024/6/9
- *作用：
+ *作用：添加呼吸灯页面
  */
 @Composable
 fun AddScreen(onBackClick: () -> Unit = {}) {
     var selectedOption by remember { mutableStateOf(CardType.OneSideCard) }
-    val cards = remember (selectedOption){
+    val cards = remember(selectedOption) {
         mutableListOf(
             CardData(CardType.OneSideCard, CardType.OneSideCard == selectedOption),
             CardData(CardType.TwoSideCard, CardType.TwoSideCard == selectedOption),
@@ -93,7 +97,7 @@ fun AddScreen(onBackClick: () -> Unit = {}) {
 
         when (selectedOption) {
             CardType.OneSideCard -> OneSideCardSetView()
-            CardType.TwoSideCard -> TwoSideCardSetView()
+            CardType.TwoSideCard -> OneSideCardSetView()
             CardType.PointCard -> PointCardSetView()
             CardType.AllBorderCard -> AllBorderCardSetView()
         }
@@ -102,38 +106,169 @@ fun AddScreen(onBackClick: () -> Unit = {}) {
 
 
 @Composable
-fun OneSideCardSetView(){
+fun OneSideCardSetView() {
 
-    Box(modifier = Modifier.fillMaxSize().background(Color.Blue)) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(10.dp)
+            .background(Color(0xFF24242E))
+    ) {
+        Row {
+            Checkbox(checked = false, onCheckedChange = {})
+            Text(
+                text = "左旋",
+                modifier = Modifier.padding(10.dp),
+                fontSize = 18.sp,
+                color = Color(0xFFB0B0B0)
+            )
+            Checkbox(checked = false, onCheckedChange = {})
+            Text(
+                text = "右旋",
+                modifier = Modifier.padding(10.dp),
+                fontSize = 18.sp,
+                color = Color(0xFFB0B0B0)
+            )
+        }
+
+        Text(
+            text = "光带长度", fontSize = 18.sp,
+            color = Color(0xFFB0B0B0)
+        )
+        Slider(
+            value = 0.5f, onValueChange = {}, colors = SliderDefaults.colors(
+                thumbColor = Color.Cyan,
+                activeTrackColor = Color.Cyan,
+                inactiveTrackColor = Color(0xFFB0B0B0)
+            )
+        )
+
+        Text(
+            text = "光带宽度", fontSize = 18.sp,
+            color = Color(0xFFB0B0B0)
+        )
+        Slider(
+            value = 0.5f, onValueChange = {}, colors = SliderDefaults.colors(
+                thumbColor = Color.Cyan,
+                activeTrackColor = Color.Cyan,
+                inactiveTrackColor = Color(0xFFB0B0B0)
+            )
+        )
+
+        Text(
+            text = "旋转速度", fontSize = 18.sp,
+            color = Color(0xFFB0B0B0)
+        )
+        Slider(
+            value = 0.5f, onValueChange = {}, colors = SliderDefaults.colors(
+                thumbColor = Color.Cyan,
+                activeTrackColor = Color.Cyan,
+                inactiveTrackColor = Color(0xFFB0B0B0)
+            )
+        )
 
     }
 
 }
 
 @Composable
-fun TwoSideCardSetView(){
-    Box(modifier = Modifier.fillMaxSize().background(Color.Red)) {
+fun TwoSideCardSetView() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Red)
+    ) {
 
     }
 }
 
 @Composable
-fun PointCardSetView(){
-    Box(modifier = Modifier.fillMaxSize().background(Color.Green)) {
+fun PointCardSetView() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(10.dp)
+            .background(Color(0xFF24242E))
+    ) {
+
+        Text(
+            text = "光带宽度", fontSize = 18.sp,
+            color = Color(0xFFB0B0B0)
+        )
+        Slider(
+            value = 0.5f, onValueChange = {}, colors = SliderDefaults.colors(
+                thumbColor = Color.Cyan,
+                activeTrackColor = Color.Cyan,
+                inactiveTrackColor = Color(0xFFB0B0B0)
+            )
+        )
+
+        Text(
+            text = "旋转速度", fontSize = 18.sp,
+            color = Color(0xFFB0B0B0)
+        )
+        Slider(
+            value = 0.5f, onValueChange = {}, colors = SliderDefaults.colors(
+                thumbColor = Color.Cyan,
+                activeTrackColor = Color.Cyan,
+                inactiveTrackColor = Color(0xFFB0B0B0)
+            )
+        )
 
     }
 }
 
 @Composable
-fun AllBorderCardSetView(){
-    Box(modifier = Modifier.fillMaxSize().background(Color.Yellow)) {
+fun AllBorderCardSetView() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(10.dp)
+            .background(Color(0xFF24242E))
+    ) {
+
+        Text(
+            text = "光带宽度", fontSize = 18.sp,
+            color = Color(0xFFB0B0B0)
+        )
+        Slider(
+            value = 0.5f, onValueChange = {}, colors = SliderDefaults.colors(
+                thumbColor = Color.Cyan,
+                activeTrackColor = Color.Cyan,
+                inactiveTrackColor = Color(0xFFB0B0B0)
+            )
+        )
+
+        Text(
+            text = "闪光速度", fontSize = 18.sp,
+            color = Color(0xFFB0B0B0)
+        )
+        Slider(
+            value = 0.5f, onValueChange = {}, colors = SliderDefaults.colors(
+                thumbColor = Color.Cyan,
+                activeTrackColor = Color.Cyan,
+                inactiveTrackColor = Color(0xFFB0B0B0)
+            )
+        )
+
+        Text(
+            text = "闪光颜色", fontSize = 18.sp,
+            color = Color(0xFFB0B0B0)
+        )
+        Slider(
+            value = 0.5f, onValueChange = {}, colors = SliderDefaults.colors(
+                thumbColor = Color.Cyan,
+                activeTrackColor = Color.Cyan,
+                inactiveTrackColor = Color(0xFFB0B0B0)
+            )
+        )
 
     }
 }
 
 
 @Composable
-fun TitleView( onBackClick: () -> Unit = {}) {
+fun TitleView(onBackClick: () -> Unit = {}) {
     Row(
         modifier = Modifier
             .background(color = Color(0xCC303038))
@@ -155,7 +290,7 @@ fun TitleView( onBackClick: () -> Unit = {}) {
                 .padding(0.dp, 10.dp, 0.dp, 10.dp)
                 .align(Alignment.CenterVertically),
             fontSize = 20.sp,
-            color = Color(0xFFB0B0B0)
+            color = Color(0xFFCFCDCD)
         )
         Spacer(modifier = Modifier.weight(1f))
     }
