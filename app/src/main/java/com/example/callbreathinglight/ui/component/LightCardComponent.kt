@@ -46,7 +46,7 @@ fun LightCardComponent(
     checkboxEnable: () -> Boolean = { true },//返回值代码：true 可修改checkbox状态
     checkboxClick: () -> Unit = { },
     initCheckValue: Boolean = false,
-    cardType: CardControlData = AllBorderCardData()
+    cardType: CardControlData = TwoSideCardData()
 ) {
 
     var checked by remember(initCheckValue) { mutableStateOf(initCheckValue) }
@@ -69,21 +69,21 @@ fun LightCardComponent(
         border = if (showBorder) BorderStroke(
             width = borderWidth.dp,
             brush = when (cardType) {
-                is PointCardData -> Brush.verticalGradient(
+                is PointCardData -> Brush.horizontalGradient(
                     listOf(
                         borderColorStart,
                         borderColorEnd
                     )
                 )
 
-               is TwoSideCardData -> Brush.radialGradient(
+                is TwoSideCardData -> Brush.horizontalGradient(
                     listOf(
                         borderColorStart,
                         borderColorEnd
                     )
                 )
 
-               is OneSideCardData -> Brush.linearGradient(
+                is OneSideCardData -> Brush.linearGradient(
                     listOf(
                         borderColorStart,
                         borderColorEnd

@@ -38,8 +38,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.callbreathinglight.R
 import com.example.callbreathinglight.ui.component.LightCardComponent
+import com.example.callbreathinglight.ui.data.AllBorderCardData
+import com.example.callbreathinglight.ui.data.CardControlData
 import com.example.callbreathinglight.ui.data.CardData
 import com.example.callbreathinglight.ui.data.CardType
+import com.example.callbreathinglight.ui.data.OneSideCardData
+import com.example.callbreathinglight.ui.data.PointCardData
+import com.example.callbreathinglight.ui.data.TwoSideCardData
 
 /**
  *@author :ckx
@@ -90,7 +95,10 @@ fun AddScreen(onBackClick: () -> Unit = {}) {
                     checkboxEnable = { !item.isChecked },
                     checkboxClick = {
                         selectedOption = item.cardType
-                    }
+                    },
+                    cardType = getControlDataByType(
+                        item.cardType
+                    )
                 )
             }
         }
@@ -101,6 +109,15 @@ fun AddScreen(onBackClick: () -> Unit = {}) {
             CardType.PointCard -> PointCardSetView()
             CardType.AllBorderCard -> AllBorderCardSetView()
         }
+    }
+}
+
+private fun getControlDataByType(type: CardType): CardControlData {
+    return when (type) {
+        CardType.OneSideCard -> OneSideCardData()
+        CardType.TwoSideCard -> TwoSideCardData()
+        CardType.PointCard -> PointCardData()
+        CardType.AllBorderCard -> AllBorderCardData()
     }
 }
 
