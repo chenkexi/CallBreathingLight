@@ -17,11 +17,20 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.callbreathinglight.ui.data.AllBorderCardData
+import com.example.callbreathinglight.ui.data.CardControlData
+import com.example.callbreathinglight.ui.data.CardType
+import com.example.callbreathinglight.ui.data.OneSideCardData
+import com.example.callbreathinglight.ui.data.PointCardData
+import com.example.callbreathinglight.ui.data.TwoSideCardData
 import kotlinx.coroutines.delay
 
 @Composable
@@ -34,9 +43,10 @@ fun LightCardComponent(
     cardHeight: Int = 300,
     modifier: Modifier = Modifier,
     cardBackground: Color = Color(0xFF3F3333),
-    checkboxEnable: () -> Boolean = { true},//返回值代码：true 可修改checkbox状态
+    checkboxEnable: () -> Boolean = { true },//返回值代码：true 可修改checkbox状态
     checkboxClick: () -> Unit = { },
-    initCheckValue:Boolean = false
+    initCheckValue: Boolean = false,
+    cardType: CardControlData = AllBorderCardData()
 ) {
 
     var checked by remember(initCheckValue) { mutableStateOf(initCheckValue) }
@@ -52,12 +62,49 @@ fun LightCardComponent(
             showBorder = true
         }
     }
+    val cardWidthPx = with(LocalDensity.current) { cardWidth.dp.toPx() }
     Card(
         backgroundColor = cardBackground,
         shape = RoundedCornerShape(20.dp),
         border = if (showBorder) BorderStroke(
             width = borderWidth.dp,
-            brush = Brush.horizontalGradient(listOf(borderColorStart, borderColorEnd))
+            brush = when (cardType) {
+                is PointCardData -> Brush.verticalGradient(
+                    listOf(
+                        borderColorStart,
+                        borderColorEnd
+                    )
+                )
+
+               is TwoSideCardData -> Brush.radialGradient(
+                    listOf(
+                        borderColorStart,
+                        borderColorEnd
+                    )
+                )
+
+               is OneSideCardData -> Brush.linearGradient(
+                    listOf(
+                        borderColorStart,
+                        borderColorEnd
+                    ),
+                    start = Offset(0f, 0f),
+                    end = Offset(
+                        (cardWidthPx * cardType.percentage / 2.2f),
+                        cardWidthPx * cardType.percentage / 2.2f
+                    ),
+                    tileMode = TileMode.Decal
+                )
+
+                else -> {
+                    Brush.horizontalGradient(
+                        listOf(
+                            borderColorStart,
+                            borderColorEnd
+                        )
+                    )
+                }
+            }
         ) else null,
         modifier = modifier
             .size(cardWidth.dp, cardHeight.dp)
@@ -73,9 +120,9 @@ fun LightCardComponent(
                 .clip(RoundedCornerShape(20.dp)), // 设置四个角的圆角为10dp,没用这里
             checked = checked,
             onCheckedChange = { isChecked ->
-                if(!isChecked && !checkboxEnable()) return@Checkbox
+                if (!isChecked && !checkboxEnable()) return@Checkbox
                 checked = isChecked
-                if(isChecked) checkboxClick()
+                if (isChecked) checkboxClick()
             }
         )
     }
